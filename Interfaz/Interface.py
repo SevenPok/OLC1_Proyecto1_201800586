@@ -1,4 +1,5 @@
 from tkinter import Tk, Menu, messagebox, filedialog, ttk, Label, scrolledtext, INSERT, END, Button, Scrollbar, RIGHT, Y, Frame, Canvas, HORIZONTAL, VERTICAL, simpledialog
+from Clases.JavaScript import JavaScript as js
 
 root = Tk()
 root.title("LABORATORIO")
@@ -22,9 +23,17 @@ def abrir():
     entrada = open(archivo)
     content = entrada.read()
 
+    a = js()
+
     editor.delete(1.0, END)
-    editor.insert(INSERT, content)
-    entrada.close()
+
+    for c in a.match(content):
+
+        editor.insert(INSERT, c[0], c[1])
+        editor.tag_config(c[1], foreground=c[3])
+
+    print()
+
 
 
 def salir():
