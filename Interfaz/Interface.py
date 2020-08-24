@@ -1,5 +1,6 @@
 from tkinter import Tk, Menu, messagebox, filedialog, ttk, Label, scrolledtext, INSERT, END, Button, Scrollbar, RIGHT, Y, Frame, Canvas, HORIZONTAL, VERTICAL, simpledialog
 from Clases.JavaScript import JavaScript as js
+from Clases.CSS import CSS as css
 
 root = Tk()
 root.title("LABORATORIO")
@@ -21,19 +22,31 @@ def abrir():
         title="Abrir Archivo", initialdir="C:/")
 
     entrada = open(archivo)
+    extension = str(archivo).split('.')
     content = entrada.read()
-
-    a = js()
-
     editor.delete(1.0, END)
-
-    for c in a.match(content):
-
-        editor.insert(INSERT, c[0], c[1])
-        editor.tag_config(c[1], foreground=c[3])
+    editor2.delete(1.0, END)
+    if extension[1] == 'js':
+        a = js()
+        for c in a.match(content):
+            editor.insert(INSERT, c[0], c[1])
+            editor.tag_config(c[1], foreground=c[4])
+            if c[1] == 'NO_RECONOCIDO':
+                linea = 'linea ' + str(c[2]) + ' columna ' + \
+                    str(c[3]) + ' caracter: ' + c[0] + '\n'
+                editor2.insert(INSERT, linea)
+    elif extension[1] == 'css':
+        a = css()
+        a.lexer(content)
+        for c in a.tokens:
+            editor.insert(INSERT, c[0], c[1])
+            editor.tag_config(c[1], foreground=c[4])
+            if c[1] == 'DESCONOCIDO':
+                linea = 'linea ' + str(c[2]) + ' columna ' + \
+                    str(c[3]) + ' caracter: ' + c[0] + '\n'
+                editor2.insert(INSERT, linea)
 
     print()
-
 
 
 def salir():

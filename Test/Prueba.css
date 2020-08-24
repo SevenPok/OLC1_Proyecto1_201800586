@@ -1,0 +1,35 @@
+P {
+    font-size: 12pt;
+    font-family: arial, helvetica;
+    font-weight: normal;
+}
+
+H1 {
+    font-size: 36pt;
+    font-family: verdana, arial;
+    text-decoration: underline;
+    text-align: center;
+    background-color: Teal;
+}
+
+BODY {
+    background-color: #006600;
+    font-family: arial;
+    color: White;
+}
+
+.ejemplo {
+    ma@rgin-top: 0;
+    margin-bottom: 0.5em;
+    line-height: inherit;
+    position: relative;
+    fon@t-size: 75%;
+    color: #333;
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+    content: "\2014\00A0";
+    posi@tion: absolute;
+    background-image: url("/home/documents/picture.png");
+    background-color: rgba(220, 53, 69, 0.9);
+    font: 76% arial, sans-serif;
+    background: 0 0 0 0.2rem rgba(51, 51, 51, 0.25);
+}
