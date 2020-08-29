@@ -1,7 +1,12 @@
-class Aritmetica:
+#!/usr/bin/env python3
+from Clases.Automata import automata
 
-    operadores = {'+': 'PLUS', '-': 'MINUS', '*': 'TIMES',
-                  '/': 'DIV', '(': 'LEFT_PARENTESIS', ')': 'RIGHT_PARENTESIS'}
+
+class Aritmetica:
+    preanalisis = ''
+
+    operadores = {'+': '+', '-': '-', '*': '*',
+                  '/': '/', '(': '(', ')': ')'}
     ignore = [' ', '\t', '\n']
 
     def __init__(self):
@@ -28,7 +33,7 @@ class Aritmetica:
                     estado = 4
                 elif c in self.operadores.keys():
                     self.tokens.append(
-                        (c, self.operadores.get(c), linea, columna))
+                        (c, self.operadores.get(c), linea, columna, 'orange'))
                 elif c in self.ignore:
                     if c == '\n':
                         linea += 1
@@ -38,7 +43,7 @@ class Aritmetica:
                         print('ANALISIS LEXICO TERMINADO')
                     else:
                         self.errores_lexicos.append(
-                            (c, 'DESCONOCIDO', linea, columna))
+                            (c, 'DESCONOCIDO', linea, columna, 'black'))
             elif estado == 1:
                 if str.isdigit(c):
                     lexema += c
@@ -47,7 +52,8 @@ class Aritmetica:
                     estado = 2
                 else:
                     columna -= 1
-                    self.tokens.append((lexema, 'ENTERO', linea, columna))
+                    self.tokens.append(
+                        (lexema, 'ENTERO', linea, columna, 'blue'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -58,7 +64,7 @@ class Aritmetica:
                 else:
                     columna -= 1
                     self.errores_lexicos.append(
-                        (lexema, 'DESCONOCIDO', linea, columna))
+                        (lexema, 'DESCONOCIDO', linea, columna, 'black'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -67,7 +73,8 @@ class Aritmetica:
                     lexema += c
                 else:
                     columna -= 1
-                    self.tokens.append((lexema, 'DECIMAL', linea, columna))
+                    self.tokens.append(
+                        (lexema, 'DECIMAL', linea, columna, 'blue'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -77,22 +84,18 @@ class Aritmetica:
                 else:
                     columna -= 1
                     self.tokens.append(
-                        (lexema, 'IDENTIFICADOR', linea, columna))
+                        (lexema, 'IDENTIFICADOR', linea, columna, 'green'))
                     lexema = ''
                     estado = 0
                     i -= 1
             i += 1
             columna += 1
 
-    def sintax(self):
-        pass
-
-
-a = Aritmetica()
-a.lexer('455\n*/ @ _var1 52')
-print('=========TOKENS=========')
-for i in a.tokens:
-    print(i)
-print('=========ERRORES========')
-for i in a.errores_lexicos:
-    print(i)
+    def syntax(self):
+        cadena = []
+        for i in self.tokens:
+            cadena.append(i[1])
+        a = automata(cadena)
+        if a.pushdown() == False:
+            print('ERROR SINTACTICO')
+        print('ANALISIS SINTACTICO TERMINADO')

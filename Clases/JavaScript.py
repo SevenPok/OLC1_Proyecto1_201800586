@@ -37,11 +37,13 @@ class JavaScript:
                     estado = 1
                 elif c == '+':
                     lexema += c
-                    salida.append((lexema, self.token[8], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[8], linea, columna, 'orange'))
                     lexema = ''
                 elif c == '-':
                     lexema += c
-                    salida.append((lexema, self.token[9], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[9], linea, columna, 'orange'))
                     lexema = ''
                 elif c == '*':
                     lexema += c
@@ -69,27 +71,33 @@ class JavaScript:
                     estado = 12
                 elif c == '(':
                     lexema += c
-                    salida.append((lexema, self.token[23], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[23], linea, columna, 'orange'))
                     lexema = ''
                 elif c == ')':
                     lexema += c
-                    salida.append((lexema, self.token[24], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[24], linea, columna, 'orange'))
                     lexema = ''
                 elif c == '.':
                     lexema += c
-                    salida.append((lexema, self.token[26], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[26], linea, columna, 'orange'))
                     lexema = ''
                 elif c == ':':
                     lexema += c
-                    salida.append((lexema, self.token[29], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[29], linea, columna, 'orange'))
                     lexema = ''
                 elif c == ',':
                     lexema += c
-                    salida.append((lexema, self.token[27], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[27], linea, columna, 'orange'))
                     lexema = ''
                 elif c == ';':
                     lexema += c
-                    salida.append((lexema, self.token[28], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[28], linea, columna, 'orange'))
                     lexema = ''
                 elif c == '"':
                     lexema += c
@@ -99,19 +107,23 @@ class JavaScript:
                     estado = 8
                 elif c == '{':
                     lexema += c
-                    salida.append((lexema, self.token[30], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[30], linea, columna, 'orange'))
                     lexema = ''
                 elif c == '}':
                     lexema += c
-                    salida.append((lexema, self.token[31], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[31], linea, columna, 'orange'))
                     lexema = ''
                 elif c == '[':
                     lexema += c
-                    salida.append((lexema, self.token[32], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[32], linea, columna, 'orange'))
                     lexema = ''
                 elif c == ']':
                     lexema += c
-                    salida.append((lexema, self.token[33], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[33], linea, columna, 'orange'))
                     lexema = ''
                 else:
                     if c == '#' and i == len(cadena) - 1:
@@ -119,7 +131,8 @@ class JavaScript:
                     elif c == '\n':
                         columna = 0
                         linea += 1
-                        salida.append((c, "SALTO DE LINEA", linea, columna, 'black'))
+                        salida.append(
+                            (c, "SALTO DE LINEA", linea, columna, 'black'))
                         lexema = ''
                     elif c in self.ignore:
                         salida.append((c, "ESPACIO", linea, columna, 'black'))
@@ -146,7 +159,8 @@ class JavaScript:
                             salida.append(
                                 (lexema, self.reserve.get(lexema), linea, columna, 'red'))
                     else:
-                        salida.append((lexema, self.token[2], linea, columna, 'green'))
+                        salida.append(
+                            (lexema, self.token[2], linea, columna, 'green'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -158,7 +172,8 @@ class JavaScript:
                     estado = 3
                 else:
                     columna -= 1
-                    salida.append((lexema, self.token[3], linea, columna, 'blue'))
+                    salida.append(
+                        (lexema, self.token[3], linea, columna, 'blue'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -167,7 +182,8 @@ class JavaScript:
                     lexema += c
                 else:
                     columna -= 1
-                    salida.append((lexema, self.token[4], linea, columna, 'blue'))
+                    salida.append(
+                        (lexema, self.token[4], linea, columna, 'blue'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -180,7 +196,8 @@ class JavaScript:
                         salida.append(
                             (lexema, self.token[13], linea, columna, 'orange'))
                     else:
-                        salida.append((lexema, self.token[10], linea, columna, 'black'))
+                        salida.append(
+                            (lexema, self.token[10], linea, columna, 'black'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -221,7 +238,8 @@ class JavaScript:
             elif estado == 7:
                 if c == '"':
                     lexema += c
-                    salida.append((lexema, self.token[5], linea, columna, 'yellow'))
+                    salida.append(
+                        (lexema, self.token[5], linea, columna, 'yellow'))
                     lexema = ''
                     estado = 0
                 else:
@@ -237,7 +255,8 @@ class JavaScript:
             elif estado == 8:
                 if c == '\'':
                     lexema += c
-                    salida.append((lexema, self.token[6], linea, columna, 'yellow'))
+                    salida.append(
+                        (lexema, self.token[6], linea, columna, 'yellow'))
                     lexema = ''
                     estado = 0
                 else:
@@ -263,7 +282,7 @@ class JavaScript:
                             (lexema, self.token[17], linea, columna, 'orange'))
                     else:
                         salida.append(
-                            (lexema, 'No  reconocido', linea, columna, 'black'))
+                            (lexema, 'NO_RECONOCIDO', linea, columna, 'black'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -280,7 +299,7 @@ class JavaScript:
                             (lexema, self.token[16], linea, columna, 'orange'))
                     else:
                         salida.append(
-                            (lexema, 'No  reconocido', linea, columna, 'black'))
+                            (lexema, 'NO_RECONOCIDO', linea, columna, 'black'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -294,7 +313,7 @@ class JavaScript:
                             (lexema, self.token[21], linea, columna, 'orange'))
                     else:
                         salida.append(
-                            (lexema, 'No  reconocido', linea, columna, 'black'))
+                            (lexema, 'NO_RECONOCIDO', linea, columna, 'black'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -308,7 +327,7 @@ class JavaScript:
                             (lexema, self.token[20], linea, columna, 'orange'))
                     else:
                         salida.append(
-                            (lexema, 'No  reconocido', linea, columna, 'black'))
+                            (lexema, 'NO_RECONOCIDO', linea, columna, 'black'))
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -321,35 +340,39 @@ class JavaScript:
                     estado = 15
                 else:
                     columna -= 1
-                    salida.append((lexema, self.token[11], linea, columna, 'orange'))
+                    salida.append(
+                        (lexema, self.token[11], linea, columna, 'orange'))
                     lexema = ''
                     estado = 0
                     i -= 1
             elif estado == 14:
                 if '\n' in lexema:
-                    salida.append((lexema, self.token[0], linea, columna, 'gray'))
+                    salida.append(
+                        (lexema, self.token[0], linea, columna, 'gray'))
                     columna = 0
                     linea += 1
                     lexema = ''
                     estado = 0
                     i -= 1
                 elif c == "#" and i == len(cadena)-1:
-                    salida.append((lexema, self.token[0], linea, columna, 'gray'))
+                    salida.append(
+                        (lexema, self.token[0], linea, columna, 'gray'))
                 else:
                     lexema += c
             elif estado == 15:
                 if '*/' in lexema:
                     columna -= 1
-                    salida.append((lexema, self.token[1], linea, columna, 'gray'))
+                    salida.append(
+                        (lexema, self.token[1], linea, columna, 'gray'))
                     linea += len(lexema.split('\n'))-1
                     lexema = ''
                     estado = 0
                     i -= 1
                 elif c == "#" and i == len(cadena)-1:
-                    salida.append((lexema, "NO_RECONOCIDO", linea, columna, 'black'))
+                    salida.append((lexema, "NO_RECONOCIDO",
+                                   linea, columna, 'black'))
                 else:
                     lexema += c
             i += 1
             columna += 1
         return salida
-

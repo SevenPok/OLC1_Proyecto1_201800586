@@ -1,6 +1,10 @@
+#!/usr/bin/env python3
 from tkinter import Tk, Menu, messagebox, filedialog, ttk, Label, scrolledtext, INSERT, END, Button, Scrollbar, RIGHT, Y, Frame, Canvas, HORIZONTAL, VERTICAL, simpledialog
 from Clases.JavaScript import JavaScript as js
 from Clases.CSS import CSS as css
+from Clases.Html import HTML as html
+from Clases.Jerarquia import Aritmetica as ar
+import os
 
 root = Tk()
 root.title("LABORATORIO")
@@ -20,7 +24,7 @@ def abrir():
     global archivo
     archivo = filedialog.askopenfilename(
         title="Abrir Archivo", initialdir="C:/")
-
+    os.system("cls")
     entrada = open(archivo)
     extension = str(archivo).split('.')
     content = entrada.read()
@@ -37,6 +41,18 @@ def abrir():
                 editor2.insert(INSERT, linea)
     elif extension[1] == 'css':
         a = css()
+        a.lexer(content)
+        for c in a.tokens:
+            editor.insert(INSERT, c[0], c[1])
+            editor.tag_config(c[1], foreground=c[4])
+            if c[1] == 'DESCONOCIDO':
+                linea = 'linea ' + str(c[2]) + ' columna ' + \
+                    str(c[3]) + ' caracter: ' + c[0] + '\n'
+                editor2.insert(INSERT, linea)
+    elif extension[1] == 'rmt':
+        editor.insert(END, content)
+    elif extension[1] == 'html':
+        a = html()
         a.lexer(content)
         for c in a.tokens:
             editor.insert(INSERT, c[0], c[1])

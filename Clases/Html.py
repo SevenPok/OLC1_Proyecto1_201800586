@@ -7,11 +7,10 @@ class HTML:
     }
 
     operadores = {
-        '<': 'ETIQUETA_INICIO', '>': 'ETIQUETA_CIERRE', '/': 'DIAGONAL', '=': 'ASSIGN', '+': 'PLUS', '-': 'MINUS', '*': 'TIMES', '(': 'PARENTESIS_INICIO', ')': 'PARENTESIS_FIN',
-        '[': 'CORCHETE_INICIO', ']': 'CORCHETE_FIN', '{': 'LEFT_KEY', '}': 'RIGHT_KEY', '.': 'dot'
+        '<': 'ETIQUETA_INICIO', '>': 'ETIQUETA_CIERRE', '/': 'DIAGONAL', '=': 'ASSIGN', '"': 'COMILLAS'
     }
 
-    ignore = [' ', '\t', '\n']
+    ignore = [' ', '\t', '\n', '']
 
     def __init__(self):
         self.tokens = []
@@ -27,15 +26,25 @@ class HTML:
         while i < len(cadena):
             c = cadena[i]
             if estado == 0:
-                if str.isalpha(c):
+                if str.isalpha(c) or c == '_':
                     lexema += c
                     estado = 1
-                elif str.isdigit(c):
-                    lexema += c
+                elif c == '>':
+                    self.tokens.append(
+                        (c, self.operadores.get(c), linea, columna, 'orange'))
                     estado = 2
-                elif c in self.operadores:
+                elif c == '<':
+                    self.tokens.append(
+                        (c, self.operadores.get(c), linea, columna, 'orange'))
+                elif c == '/':
+                    self.tokens.append(
+                        (c, self.operadores.get(c), linea, columna, 'orange'))
+                elif c == '=':
+                    self.tokens.append(
+                        (c, self.operadores.get(c), linea, columna, 'orange'))
+                elif c == '"':
                     lexema += c
-                    estado = 4
+                    estado = 3
                 elif c in self.ignore:
                     if c == '\n':
                         linea += 1
@@ -52,7 +61,7 @@ class HTML:
                 if str.isalpha(c) or str.isdigit(c) or c == '_':
                     lexema += c
                 else:
-                    columna = -1
+                    columna -= 1
                     if lexema in self.reserve.keys():
                         self.tokens.append(
                             (lexema, self.reserve.get(lexema), linea, columna, 'green'))
@@ -63,9 +72,35 @@ class HTML:
                     estado = 0
                     i -= 1
             elif estado == 2:
-                if str.isdigit(c):
+                if c == '<':
+                    columna -= 1
+                    self.tokens.append(
+                        (lexema, 'TEXTO', linea, columna, 'black'))
+                    lexema = ''
+                    estado = 0
+                    i -= 1
+                elif c == '#' and i == len(cadena) - 1 and lexema not in self.ignore:
+                    self.tokens.append(
+                        (lexema, 'DESCONOCIDO', linea, columna, 'black'))
+                else:
+                    if c == '\n':
+                        linea += 1
+                        columna = 0
                     lexema += c
-                elif c == '.':
-                    pass
+            elif estado == 3:
+                if c == '"':
+                    lexema += c
+                    self.tokens.append(
+                        (lexema, 'STRING', linea, columna, 'yellow'))
+                    lexema = ''
+                    estado = 0
+                elif c == '#' and i == len(cadena) - 1:
+                    self.tokens.append(
+                        (lexema, 'DESCONOCIDO', linea, columna, 'black'))
+                else:
+                    if c == '\n':
+                        linea += 1
+                        columna = 0
+                    lexema += c
             columna += 1
             i += 1
