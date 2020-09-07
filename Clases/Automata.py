@@ -12,7 +12,6 @@ class automata:
         # estado = 'q'
         c = self.cadena.pop(0)
         while pila[len(pila) - 1] != '#':
-
             if pila[len(pila) - 1] == 'E':
                 if c == ')':
                     pila.pop()

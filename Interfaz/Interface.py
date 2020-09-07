@@ -4,12 +4,13 @@ from Clases.JavaScript import JavaScript as js
 from Clases.CSS import CSS as css
 from Clases.Html import HTML as html
 from Clases.Jerarquia import Aritmetica as ar
+from Clases.Reporte import Reporte
 import os
 
 root = Tk()
 root.title("LABORATORIO")
 root.configure(background="black")
-
+extension = ["", ""]
 root.resizable(0, 0)
 archivo = ""
 
@@ -21,7 +22,7 @@ def nuevo():
 
 
 def abrir():
-    global archivo
+    global archivo, extension
     archivo = filedialog.askopenfilename(
         title="Abrir Archivo", initialdir="C:/")
     os.system("cls")
@@ -50,7 +51,28 @@ def abrir():
                     str(c[3]) + ' caracter: ' + c[0] + '\n'
                 editor2.insert(INSERT, linea)
     elif extension[1] == 'rmt':
-        editor.insert(END, content)
+        #editor.insert(END, content)
+        content = content.split('\n')
+        for linea in content:
+            a = ar()
+            a.lexer(linea)
+            for c in a.errores_lexicos:
+                linea = 'linea ' + str(c[2]) + ' columna ' + \
+                    str(c[3]) + ' caracter: ' + c[0] + '\n'
+                editor2.insert(INSERT, linea)
+
+        for linea in content:
+            a = ar()
+            a.lexer(linea)
+            for c in a.tokens:
+                editor.insert(INSERT, c[0], c[1])
+                editor.tag_config(c[1], foreground=c[4])
+            if a.syntax():
+                editor2.insert(INSERT, 'Correcto\n')
+            else:
+                editor2.insert(INSERT, 'Incorrecto\n')
+            editor.insert(INSERT, '\n')
+
     elif extension[1] == 'html':
         a = html()
         a.lexer(content)
@@ -71,6 +93,30 @@ def salir():
         root.destroy()
 
 
+def reporte_Js():
+    contenido = editor.get("1.0", END)
+    a = js()
+    b = Reporte(a.match(contenido))
+    b.reporte_analisis_lexico('Reporte JavaScript')
+
+
+def reporte_CSS():
+    os.system("cls")
+    contenido = editor.get("1.0", END)
+    a = css()
+    a.lexer(contenido)
+    b = Reporte(a.tokens)
+    b.reporte_analisis_lexico('Reporte CSS')
+
+
+def reporte_Html():
+    contenido = editor.get("1.0", END)
+    a = html()
+    a.lexer(contenido)
+    b = Reporte(a.tokens)
+    b.reporte_analisis_lexico('Reporte html')
+
+
 def guardarArchivo():
     global archivo
     if archivo == "":
@@ -79,6 +125,19 @@ def guardarArchivo():
         guardarc = open(archivo, "w")
         guardarc.write(editor.get(1.0, END))
         guardarc.close()
+        if extension[1] == 'js':
+            a = js()
+            contenido = editor.get("1.0", END)
+            tokens = a.match(contenido)
+            
+        elif extension[1] == 'css':
+            a = css()
+            contenido = editor.get("1.0", END)
+            a.lexer(contenido)
+        elif extension[1] == 'html':
+            a = html()
+            contenido = editor.get("1.0", END)
+            a.lexer(contenido)
 
 
 def guardarComo():
@@ -92,7 +151,7 @@ def guardarComo():
 
 
 barraMenu = Menu(root)
-root.config(menu=barraMenu, width=1000, height=600)
+root.config(menu=barraMenu, width=1100, height=600)
 
 archivoMenu = Menu(barraMenu, tearoff=0)
 archivoMenu.add_command(label="Nuevo", command=nuevo)
@@ -102,7 +161,13 @@ archivoMenu.add_command(label="Guardar Como...", command=guardarComo)
 archivoMenu.add_separator()
 archivoMenu.add_command(label="Salir", command=salir)
 
+reportes = Menu(barraMenu, tearoff=0)
+reportes.add_command(label="Reporte JavaScript", command=reporte_Js)
+reportes.add_command(label="Reporte CSS", command=reporte_CSS)
+reportes.add_command(label="Reporte HTMl", command=reporte_Html)
+
 barraMenu.add_cascade(label="Archivo", menu=archivoMenu)
+barraMenu.add_cascade(label="Reporte", menu=reportes)
 barraMenu.add_command(label="Salir",  command=salir)
 
 frame = Frame(root, bg="black")
@@ -121,12 +186,12 @@ canvas.configure(yscrollcommand=scrollbar.set, width=1500, height=600)
 ttk.Label(scroll, text="Analizador Lexico", font=("Arial", 17),
           background='LightSkyBlue2', foreground="black").grid(column=1, row=0)
 
-editor = scrolledtext.ScrolledText(scroll, undo=True, width=60, height=20, font=(
+editor = scrolledtext.ScrolledText(scroll, undo=True, width=80, height=20, font=(
     "Arial", 15), background='white',  foreground="black")
 
 editor.grid(column=1, row=1, pady=10, padx=30)
 
-editor2 = scrolledtext.ScrolledText(scroll, undo=True, width=60, height=20, font=(
+editor2 = scrolledtext.ScrolledText(scroll, undo=True, width=40, height=20, font=(
     "Arial", 15), background='white',  foreground="black")
 
 editor2.grid(column=2, row=1, pady=25, padx=50)

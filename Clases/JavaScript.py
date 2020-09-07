@@ -26,7 +26,7 @@ class JavaScript:
             c = cadena[i]
 
             if estado == 0:
-                if str.isalpha(c):
+                if (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122):
                     lexema += c
                     estado = 1
                 elif str.isdigit(c):
@@ -143,7 +143,7 @@ class JavaScript:
                             (lexema, "NO_RECONOCIDO", linea, columna, 'black'))
                         lexema = ''
             elif estado == 1:
-                if str.isalpha(c):
+                if (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122):
                     lexema += c
                 elif str.isdigit(c):
                     lexema += c

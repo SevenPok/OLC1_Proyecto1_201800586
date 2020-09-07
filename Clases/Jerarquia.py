@@ -28,7 +28,7 @@ class Aritmetica:
                 if str.isdigit(c):
                     lexema += c
                     estado = 1
-                elif str.isalpha(c) or c == '_':
+                elif (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122) or c == '_':
                     lexema += c
                     estado = 4
                 elif c in self.operadores.keys():
@@ -79,7 +79,7 @@ class Aritmetica:
                     estado = 0
                     i -= 1
             elif estado == 4:
-                if str.isalpha(c) or str.isdigit(c) or c == '_':
+                if (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122) or str.isdigit(c) or c == '_':
                     lexema += c
                 else:
                     columna -= 1
@@ -97,5 +97,6 @@ class Aritmetica:
             cadena.append(i[1])
         a = automata(cadena)
         if a.pushdown() == False:
-            print('ERROR SINTACTICO')
-        print('ANALISIS SINTACTICO TERMINADO')
+            return False
+        return True
+

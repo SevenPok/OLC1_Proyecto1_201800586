@@ -7,7 +7,7 @@ class HTML:
     }
 
     operadores = {
-        '<': 'ETIQUETA_INICIO', '>': 'ETIQUETA_CIERRE', '/': 'DIAGONAL', '=': 'ASSIGN', '"': 'COMILLAS'
+        '<': 'ETIQUETA_INICIO', '>': 'ETIQUETA_CIERRE', '/': 'DIAGONAL', '=': 'ASSIGN', '"': 'COMILLAS', '!': 'EXCLAMACION'
     }
 
     ignore = [' ', '\t', '\n', '']
@@ -26,7 +26,7 @@ class HTML:
         while i < len(cadena):
             c = cadena[i]
             if estado == 0:
-                if str.isalpha(c) or c == '_':
+                if (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122) or c == '_':
                     lexema += c
                     estado = 1
                 elif c == '>':
@@ -34,12 +34,15 @@ class HTML:
                         (c, self.operadores.get(c), linea, columna, 'orange'))
                     estado = 2
                 elif c == '<':
-                    self.tokens.append(
-                        (c, self.operadores.get(c), linea, columna, 'orange'))
+                    lexema += c
+                    estado = 4
                 elif c == '/':
                     self.tokens.append(
                         (c, self.operadores.get(c), linea, columna, 'orange'))
                 elif c == '=':
+                    self.tokens.append(
+                        (c, self.operadores.get(c), linea, columna, 'orange'))
+                elif c == '!':
                     self.tokens.append(
                         (c, self.operadores.get(c), linea, columna, 'orange'))
                 elif c == '"':
@@ -58,13 +61,13 @@ class HTML:
                         self.tokens.append(
                             (c, 'DESCONOCIDO', linea, columna, 'black'))
             elif estado == 1:
-                if str.isalpha(c) or str.isdigit(c) or c == '_':
+                if (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122) or str.isdigit(c) or c == '_':
                     lexema += c
                 else:
                     columna -= 1
                     if lexema in self.reserve.keys():
                         self.tokens.append(
-                            (lexema, self.reserve.get(lexema), linea, columna, 'green'))
+                            (lexema, self.reserve.get(lexema), linea, columna, 'red'))
                     else:
                         self.tokens.append(
                             (lexema, 'IDENTIFICADOR', linea, columna, 'green'))
@@ -102,5 +105,41 @@ class HTML:
                         linea += 1
                         columna = 0
                     lexema += c
+            elif estado == 4:
+                if c == '!':
+                    lexema += c
+                    estado = 5
+                else:
+                    columna -= 1
+                    self.tokens.append(
+                        (lexema, self.operadores.get(lexema), linea, columna, 'orange'))
+                    lexema = ''
+                    estado = 0
+            elif estado == 5:
+                if c == '-':
+                    lexema += c
+                    if '--' in lexema:
+                        estado = 6
+                else:
+                    columna -= 1
+                    self.tokens.append(
+                        (lexema, 'INICIO', linea, columna, 'orange'))
+                    lexema = ''
+                    estado = 0
+            elif estado == 6:
+                if '-->' in lexema:
+                    columna -= 1
+                    self.tokens.append(
+                        (lexema, 'COMENTARIO', linea, columna, 'gray'))
+                    lexema = ''
+                    linea += len(lexema.split('\n'))-1
+                    estado = 0
+                elif c == "#" and i == len(cadena)-1:
+                    self.tokens.append(
+                        (lexema, 'DESCONOCIDO', linea, columna, 'black'))
+                else:
+                    lexema += c
             columna += 1
             i += 1
+
+

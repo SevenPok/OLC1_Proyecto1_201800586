@@ -20,9 +20,8 @@ class CSS:
                'cm', 'mm', 'pt', 'pc', 'relative', 'rgba', 'url', 'width',
                'height', 'content', 'inline-block'
                ]
-    operadores = {'>': 'GREATER', '<': 'MINOR', '+': 'PLUS', '\\': 'SLASH', '"': 'COMILLAS_DOBLES', '$': 'DOLLAR',
-                  '/': 'DIGONAL', '{': 'LEFT_KEY', '}': 'RIGHT_KEY', '.': 'DOT', '-': 'MINUS', '*': 'TIMES', '%': 'PORCENT', ',': 'COMMA',
-                  ';': 'SEMICOLON', ':': 'COLON', '#': 'TAG', '=': 'ASSIGN', '(': 'LEFT_PARENTESIS', ')': 'RIGHT_PARENTESIS', '\'': 'COMILLAS'
+    operadores = {'"': 'COMILLAS_DOBLES', '/': 'DIGONAL', '{': 'LEFT_KEY', '}': 'RIGHT_KEY', '.': 'DOT', '-': 'MINUS', '%': 'PORCENT', ',': 'COMMA',
+                  ';': 'SEMICOLON', ':': 'COLON', '#': 'TAG', '(': 'LEFT_PARENTESIS', ')': 'RIGHT_PARENTESIS', '\'': 'COMILLAS', '*': 'TIMES'
                   }
     ignore = [' ', '\t', '\n']
 
@@ -39,9 +38,9 @@ class CSS:
         columna = 1
         while i < len(cadena):
             c = cadena[i]
-            print('Estado: ', estado)
+
             if estado == 0:
-                if str.isalpha(c) or c == '_':
+                if (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122) or c == '_':
                     lexema += c
                     estado = 1
                 elif str.isdigit(c):
@@ -65,27 +64,27 @@ class CSS:
                 elif c in self.operadores and i != len(cadena) - 1:
                     self.tokens.append(
                         (c, self.operadores.get(c), linea, columna, 'orange'))
-                    print(' Token: ', c)
+                    print('Estado: ', estado, ' Token: ', c)
                 else:
                     if c == '#' and i == len(cadena) - 1:
                         print('TERMINO EL ANALISIS')
                     else:
                         self.tokens.append(
                             (c, 'DESCONOCIDO', linea, columna, 'black'))
-                        print(' Error: ', c)
+                        print('Estado: ', estado, ' Error: ', c)
             elif estado == 1:
-                if str.isalpha(c) or str.isdigit(c) or c == '-' or c == '_':
+                if (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122) or str.isdigit(c) or c == '-' or c == '_':
                     lexema += c
                 else:
                     columna -= 1
                     if lexema in self.reserve:
                         self.tokens.append(
-                            (lexema, 'RESERVADO', linea, columna, 'green'))
-                        print(' Token: ', lexema.upper())
+                            (lexema, 'RESERVADO', linea, columna, 'red'))
+                        print('Estado: ', estado, ' Token: ', lexema.upper())
                     else:
                         self.tokens.append(
-                            (lexema, 'IDENTIFICADOR', linea, columna, 'red'))
-                        print(' Token: IDENTIFICADOR')
+                            (lexema, 'IDENTIFICADOR', linea, columna, 'green'))
+                        print('Estado: ', estado, ' Token: IDENTIFICADOR')
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -96,7 +95,7 @@ class CSS:
                     columna -= 1
                     self.tokens.append(
                         (lexema, 'NUMERO', linea, columna, 'blue'))
-                    print(' Token: NUMERO')
+                    print('Estado: ', estado, ' Token: NUMERO')
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -105,43 +104,37 @@ class CSS:
                     lexema += c
                     self.tokens.append(
                         (lexema, 'STRING', linea, columna, 'yellow'))
-                    print('T    oken: STRING')
+                    print('Estado: ', estado, ' Token: STRING')
                     lexema = ''
                     estado = 0
-                elif str.isalpha(c) or str.isdigit(c) or c in self.operadores or c == '_' or c in self.ignore:
-                    if c == '\n':
-                        linea += 1
-                        columna = 0
-                    lexema += c
                 else:
-                    columna -= 1
-                    self.tokens.append(
-                        (lexema, 'DESCONOCIDO', linea, columna, 'black'))
-                    print(' Error: ', lexema)
-                    lexema = ''
-                    estado = 0
-                    i -= 1
+                    if c == '#' and i == len(cadena) - 1:
+                        columna -= 1
+                        self.tokens.append(
+                            (lexema, 'DESCONOCIDO', linea, columna, 'black'))
+                        lexema = ''
+                        estado = 0
+                        i -= 1
+                    else:
+                        lexema += c
             elif estado == 4:
                 if c == '\'':
                     lexema += c
                     self.tokens.append(
                         (lexema, 'CHAR', linea, columna, 'yellow'))
-                    print(' Token: CHAR')
+                    print('Estado: ', estado, ' Token: CHAR')
                     lexema = ''
                     estado = 0
-                elif str.isalpha(c) or str.isdigit(c) or c in self.operadores or c == '_' or c in self.ignore:
-                    if c == '\n':
-                        linea += 1
-                        columna = 0
-                    lexema += c
                 else:
-                    columna -= 1
-                    self.tokens.append(
-                        (lexema, 'DESCONOCIDO', linea, columna, 'black'))
-                    print(' Error: ', lexema)
-                    lexema = ''
-                    estado = 0
-                    i -= 1
+                    if c == '#' and i == len(cadena) - 1:
+                        columna -= 1
+                        self.tokens.append(
+                            (lexema, 'DESCONOCIDO', linea, columna, 'black'))
+                        lexema = ''
+                        estado = 0
+                        i -= 1
+                    else:
+                        lexema += c
             elif estado == 5:
                 if c == '*':
                     lexema += c
@@ -149,7 +142,8 @@ class CSS:
                 else:
                     columna -= 1
                     self.tokens.append(
-                        (lexema, self.operadores.get('/'), linea, columna, 'orange'))
+                        (lexema, 'DIAGONAL', linea, columna, 'black'))
+                    print('Estado: ', estado, ' Token: DIAGONAL')
                     lexema = ''
                     estado = 0
                     i -= 1
@@ -158,14 +152,14 @@ class CSS:
                     columna -= 1
                     self.tokens.append(
                         (lexema, 'COMENTARIO', linea, columna, 'gray'))
-                    print(' Token: COMENTARIO')
+                    print('Estado: ', estado, ' Token: COMENTARIO')
                     lexema = ''
                     estado = 0
                     i -= 1
                 elif c == "#" and i == len(cadena)-1:
                     self.tokens.append(
-                        (lexema, "NO_RECONOCIDO", linea, columna, 'black'))
-                    print(' ERROR: ', lexema)
+                        (lexema, "DESCONOCIDO", linea, columna, 'black'))
+                    print('Estado: ', estado, ' Error: ', lexema)
                 else:
                     if c == '\n':
                         linea += 1
