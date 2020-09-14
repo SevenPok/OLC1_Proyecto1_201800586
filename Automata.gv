@@ -1,0 +1,33 @@
+digraph Automata {
+	subgraph child {
+		rankdir=TB size="8,5"
+		node [height=0.5 shape=ellipse width=0.5]
+		0 -> 13 [label="/"]
+		13 [peripheries=2]
+		13 -> 14 [label="*"]
+		14 -> 15 [label=C]
+		15 -> 24 [label="*/"]
+		24 [peripheries=2]
+		0 -> 1 [label="L, _"]
+		1 -> 1 [label="L, _, D"]
+		1 [peripheries=2]
+		0 -> 5 [label="="]
+		5 [peripheries=2]
+		0 -> 8 [label="'"]
+		8 -> 8 [label=C]
+		8 -> 23 [label="'"]
+		23 [peripheries=2]
+		0 -> 2 [label=D]
+		2 -> 2 [label=D]
+		2 [peripheries=2]
+		0 -> 7 [label="\""]
+		7 -> 7 [label=C]
+		7 -> 21 [label="\""]
+		21 [peripheries=2]
+		13 -> 25 [label="/"]
+		25 -> 25 [label=C]
+		25 [peripheries=2]
+		node [shape=none]
+		edge [arrowhead=empty arrowsize=1.5]
+	}
+}

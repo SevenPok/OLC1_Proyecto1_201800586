@@ -42,3 +42,41 @@ class Reporte:
         mensaje = bytes(contenido, 'utf-8')
         f.write(mensaje)
         f.close()
+
+    def reporte_analisis_sintactico(self, titulo):
+        contador = 1
+        contenido = """
+<html>
+    <head><title>Reporte</title></head>
+    <body>
+        """
+        contenido += "<h1>"+titulo+"</h1>\n"
+        tabla = """
+        <table  border="1" style="text-align:center;">
+        <tr>
+        <td><strong>Linea</strong></td>
+        <td><strong>Operacion</strong></td>
+        <td><strong>Analisis</strong></td>
+         </tr>
+        """
+        for i in self.tokens:
+            tabla += '      <tr>\n'
+            tabla += "      <td>" + str(contador) + "</td>\n"
+            tabla += '      <td>' + str(i[0]) + '</td>\n'
+            if i[1]:
+                tabla += '      <td>Correcto</td>\n'
+            else:
+                tabla += '      <td>Incorrecto</td>\n'
+            tabla += "      </tr>\n\n"
+            contador += 1
+
+        tabla += "      </table>\n"
+        contenido += tabla + """
+    </body>
+</html>
+        """
+        titulo = titulo + ".html"
+        f = open(titulo, 'wb')
+        mensaje = bytes(contenido, 'utf-8')
+        f.write(mensaje)
+        f.close()

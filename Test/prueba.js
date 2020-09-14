@@ -1,5 +1,5 @@
 /*
-comentario multilinea
+    PATHW -> c:\user\output\js\
 */
 
 var cadena = 'Pablo'
@@ -20,3 +20,4 @@ function confirmacion() {
 }
 
 //primer compentario
+

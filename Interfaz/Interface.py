@@ -6,6 +6,7 @@ from Clases.Html import HTML as html
 from Clases.Jerarquia import Aritmetica as ar
 from Clases.Reporte import Reporte
 import os
+import re
 
 root = Tk()
 root.title("LABORATORIO")
@@ -117,6 +118,30 @@ def reporte_Html():
     b.reporte_analisis_lexico('Reporte html')
 
 
+def reporte_Sintactico():
+    content = editor.get("1.0", END)
+    a = ar()
+    content = content.split('\n')
+    tokens = []
+    for linea in content:
+        a = ar()
+        a.lexer(linea)
+        if linea == '\n' or linea == '' or linea == '   ':
+            pass
+        elif a.syntax():
+            tokens.append((linea, True))
+        else:
+            tokens.append((linea, False))
+    b = Reporte(tokens)
+    b.reporte_analisis_sintactico('Reporte Analisis Sintactico')
+
+
+def automata():
+    contenido = editor.get("1.0", END)
+    a = js()
+    a.automata(contenido)
+
+
 def guardarArchivo():
     global archivo
     if archivo == "":
@@ -125,19 +150,80 @@ def guardarArchivo():
         guardarc = open(archivo, "w")
         guardarc.write(editor.get(1.0, END))
         guardarc.close()
+        mi_ruta = 'D:\\david\\Documents\\Otros\\Output'
         if extension[1] == 'js':
             a = js()
             contenido = editor.get("1.0", END)
             tokens = a.match(contenido)
-            
+            for i in tokens:
+                if ('COMENTARIO_UNILINEA' == i[1] and 'PATHW' in i[0]) or ('COMENTARIO_MULTILINEA' == i[1] and 'PATHW' in i[0]):
+                    ruta = re.findall(
+                        r'((?:[a-zA-Z]\:){0,1}(?:[\\][\w.]+){1,})', i[0])[0]
+                    mi_ruta += ruta.split('output')[1]
+                    try:
+                        os.stat(mi_ruta)
+                    except:
+                        os.mkdir(mi_ruta)
+                    nombre = archivo.split('/')
+                    mi_ruta += "\\" + nombre[len(nombre) - 1]
+                    fguardar = open(mi_ruta, "w+")
+                    mensaje = ''
+                    for i in tokens:
+                        if i[1] != 'NO_RECONOCIDO':
+                            mensaje += i[0]
+
+                    fguardar.write(mensaje)
+                    fguardar.close()
+                    break
         elif extension[1] == 'css':
             a = css()
             contenido = editor.get("1.0", END)
             a.lexer(contenido)
+            for i in a.tokens:
+                if 'COMENTARIO' == i[1] and 'PATHW' in i[0]:
+                    ruta = re.findall(
+                        r'((?:[a-zA-Z]\:){0,1}(?:[\\][\w.]+){1,})', i[0])[0]
+                    mi_ruta += ruta.split('output')[1]
+                    try:
+                        os.stat(mi_ruta)
+                    except:
+                        os.mkdir(mi_ruta)
+                    nombre = archivo.split('/')
+                    mi_ruta += "\\" + nombre[len(nombre) - 1]
+                    fguardar = open(mi_ruta, "w+")
+                    mensaje = ''
+                    for i in a.tokens:
+                        if i[1] != 'DESCONOCIDO':
+                            mensaje += i[0]
+
+                    fguardar.write(mensaje)
+                    fguardar.close()
+                    break
         elif extension[1] == 'html':
             a = html()
             contenido = editor.get("1.0", END)
             a.lexer(contenido)
+            for i in a.tokens:
+                if 'COMENTARIO' == i[1] and 'PATHW' in i[0]:
+                    ruta = re.findall(
+                        r'((?:[a-zA-Z]\:){0,1}(?:[\\][\w.]+){1,})', i[0])[0]
+                    mi_ruta += ruta.split('output')[1]
+                    try:
+                        os.stat(mi_ruta)
+                    except:
+                        os.mkdir(mi_ruta)
+                    nombre = archivo.split('/')
+                    mi_ruta += "\\" + nombre[len(nombre) - 1]
+                    fguardar = open(mi_ruta, "w+")
+                    mensaje = ''
+                    for i in a.tokens:
+                        if i[1] != 'DESCONOCIDO':
+                            mensaje += i[0]
+
+                    fguardar.write(mensaje)
+                    fguardar.close()
+                    break
+        print(mi_ruta)
 
 
 def guardarComo():
@@ -165,6 +251,9 @@ reportes = Menu(barraMenu, tearoff=0)
 reportes.add_command(label="Reporte JavaScript", command=reporte_Js)
 reportes.add_command(label="Reporte CSS", command=reporte_CSS)
 reportes.add_command(label="Reporte HTMl", command=reporte_Html)
+reportes.add_command(label="Reporte Analisis sintactico",
+                     command=reporte_Sintactico)
+reportes.add_command(label="Automata", command=automata)
 
 barraMenu.add_cascade(label="Archivo", menu=archivoMenu)
 barraMenu.add_cascade(label="Reporte", menu=reportes)

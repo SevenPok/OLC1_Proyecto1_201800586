@@ -26,7 +26,7 @@ class HTML:
         while i < len(cadena):
             c = cadena[i]
             if estado == 0:
-                if (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122) or c == '_':
+                if str.isalpha(c) or c == '_':
                     lexema += c
                     estado = 1
                 elif c == '>':
@@ -61,7 +61,7 @@ class HTML:
                         self.tokens.append(
                             (c, 'DESCONOCIDO', linea, columna, 'black'))
             elif estado == 1:
-                if (ord(c) >= 65 and ord(c) <= 90) or (ord(c) >= 97 and ord(c) <= 122) or str.isdigit(c) or c == '_':
+                if str.isalpha(c) or c == '_':
                     lexema += c
                 else:
                     columna -= 1

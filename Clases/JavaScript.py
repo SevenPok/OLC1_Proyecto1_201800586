@@ -1,3 +1,4 @@
+from graphviz import Digraph
 
 
 class JavaScript:
@@ -7,7 +8,7 @@ class JavaScript:
                         'return': 'RETURN', 'constructor': 'CONSTRUCTOR', 'class': 'CLASS', 'Math': 'MATH', 'pow': 'POW', 'true': 'BOOLEAN', 'false': 'BOOLEAN', 'this': 'THIS'}
 
         self.token = ['COMENTARIO_UNILINEA', 'COMENTARIO_MULTILINEA', 'ID', 'NUMERO_ENTERO', 'NUMERO_REAL', 'STRING', 'CHAR', 'BOOLEAN', 'PLUS',
-                      'MINUS', 'TIMES', 'DIV', 'STATEMENT', 'ASSIGN', 'EQUALS', 'DIFERENT', 'GREATER', 'MINNOR', 'GREATER_EQUALS', 'MINOR_EQULAS',
+                      'MINUS', 'TIMES', 'DIV', 'STATEMENT', 'ASSIGN', 'EQUALS', 'DIFERENT', 'GREATER', 'MINOR', 'GREATER_EQUALS', 'MINOR_EQUALS',
                       'CONJUNCTION', 'DISJUNCTION', 'NEGATIVE', 'LEFT_PARENTESIS', 'RIGHT_PARENTESIS', 'PATH', 'DOT', 'COMMA', 'SEMICOLON', 'COLON',
                       'LEFT_KEY', 'RIGHT_KEY', 'LEFT_CORCHETE', 'RIGHT_CORCHETE']
 
@@ -376,3 +377,145 @@ class JavaScript:
             i += 1
             columna += 1
         return salida
+
+    def automata(self, cadena):
+        token = self.match(cadena)
+        flag = []
+        g = Digraph(format='png', name='Automata')
+
+        f = Digraph('child')
+
+        f.attr(rankdir='TB', size='8,5')
+        estado = []
+        f.attr('node', shape='ellipse', width='0.5', height='0.5')
+        for i in token:
+            if i[1] not in flag:
+                if i[1] == 'ID':
+                    f.edge('0', '1', label="L, _")
+                    f.edge('1', '1', label="L, _, D")
+                    f.node('1', peripheries='2')
+                elif i[1] == 'NUMERO_ENTERO':
+                    if 2 not in estado:
+                        estado.append(2)
+                        f.edge('0', '2', label="D")
+                        f.edge('2', '2', label="D")
+                        f.node('2', peripheries='2')
+                elif i[1] == 'NUMERO_REAL':
+                    if 2 not in estado:
+                        f.edge('0', '2', label="D")
+                        f.edge('2', '2', label="D")
+                        f.node('2', peripheries='2')
+                    f.edge('2', '3', label=".")
+                    f.edge('3', '16', label="D")
+                    f.edge('16', '16', label="D")
+                    f.node('16', peripheries='2')
+                elif i[1] == 'NEGATIVE':
+                    if 6 not in estado:
+                        estado.append(6)
+                        f.edge('0', '6', label="!")
+                        f.node('6', peripheries='2')
+                elif i[1] == 'DIFERENT':
+                    if 6 not in estado:
+                        estado.append(6)
+                        f.edge('0', '6', label="!")
+                        f.node('6', peripheries='2')
+                    f.edge('6', '17', label="=")
+                    f.node('17', peripheries='2')
+                elif i[1] == 'TIMES':
+                    if 4 not in estado:
+                        estado.append(4)
+                        f.edge('0', '4', label="*")
+                        f.node('4', peripheries='2')
+                elif i[1] == 'ASSIGN':
+                    if 4 not in estado:
+                        estado.append(4)
+                        f.edge('0', '4', label="*")
+                        f.node('4', peripheries='2')
+                    f.edge('4', '17', label="=")
+                    f.node('17', peripheries='2')
+                elif i[1] == 'STATEMENT':
+                    if 5 not in estado:
+                        estado.append(5)
+                        f.edge('0', '5', label="=")
+                        f.node('5', peripheries='2')
+                elif i[1] == 'EQUALS':
+                    if 5 not in estado:
+                        estado.append(5)
+                        f.edge('0', '5', label="=")
+                        f.node('5', peripheries='2')
+                    f.edge('5', '17', label="=")
+                    f.node('17', peripheries='2')
+                elif i[1] == 'GREATER':
+                    if 10 not in estado:
+                        estado.append(10)
+                        f.edge('0', '10', label=">")
+                        f.node('10', peripheries='2')
+                elif i[1] == 'GREATER_EQUALS':
+                    if 10 not in estado:
+                        estado.append(10)
+                        f.edge('0', '10', label=">")
+                        f.node('10', peripheries='2')
+                    f.edge('10', '17', label="=")
+                    f.node('17', peripheries='2')
+                elif i[1] == 'MINOR':
+                    if 9 not in estado:
+                        estado.append(9)
+                        f.edge('0', '9', label="<")
+                        f.node('9', peripheries='2')
+                elif i[1] == 'MINOR_EQUALS':
+                    if 9 not in estado:
+                        estado.append(9)
+                        f.edge('0', '9', label="<")
+                        f.node('9', peripheries='2')
+                    f.edge('9', '17', label="=")
+                    f.node('17', peripheries='2')
+                elif i[1] == 'STRING':
+                    f.edge('0', '7', label="\"")
+                    f.edge('7', '7', label="C")
+                    f.edge('7', '21', label="\"")
+                    f.node('21', peripheries='2')
+                elif i[1] == 'CHAR':
+                    f.edge('0', '8', label="'")
+                    f.edge('8', '8', label="C")
+                    f.edge('8', '23', label="'")
+                    f.node('23', peripheries='2')
+                elif i[1] == 'DIV':
+                    if 13 not in estado:
+                        estado.append(13)
+                        f.edge('0', '13', label="/")
+                        f.node('13', peripheries='2')
+                elif i[1] == 'DISJUNCTION':
+                    f.edge('0', '11', label="|")
+                    f.edge('11', '18', label="|")
+                    f.node('18', peripheries='2')
+                elif i[1] == 'CONJUNCTION':
+                    f.edge('0', '12', label="&")
+                    f.edge('12', '19', label="&")
+                    f.node('19', peripheries='2')
+                elif i[1] == 'COMENTARIO_MULTILINEA':
+                    if 13 not in estado:
+                        estado.append(13)
+                        f.edge('0', '13', label="/")
+                        f.node('13', peripheries='2')
+
+                    f.edge('13', '14', label="*")
+                    f.edge('14', '15', label="C")
+                    f.edge('15', '24', label="*/")
+                    f.node('24', peripheries='2')
+
+                elif i[1] == 'COMENTARIO_UNILINEA':
+                    if 13 not in estado:
+                        estado.append(13)
+                        f.edge('0', '13', label="/")
+                        f.node('13', peripheries='2')
+                    f.edge('13', '25', label="/")
+                    f.edge('25', '25', label="C")
+                    f.node('25', peripheries='2')
+            flag.append(i[1])
+
+        f.attr('node', shape='none')
+        f.attr('edge', arrowhead='empty', arrowsize='1.5')
+
+        g.subgraph(f)
+
+        g.render()
