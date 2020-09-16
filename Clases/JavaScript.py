@@ -1,4 +1,5 @@
 from graphviz import Digraph
+import os
 
 
 class JavaScript:
@@ -519,3 +520,4 @@ class JavaScript:
         g.subgraph(f)
 
         g.render()
+        os.startfile('Automata.gv.png')

@@ -115,6 +115,7 @@ class HTML:
                         (lexema, self.operadores.get(lexema), linea, columna, 'orange'))
                     lexema = ''
                     estado = 0
+                    i -= 1
             elif estado == 5:
                 if c == '-':
                     lexema += c
@@ -126,6 +127,7 @@ class HTML:
                         (lexema, 'INICIO', linea, columna, 'orange'))
                     lexema = ''
                     estado = 0
+                    i -= 1
             elif estado == 6:
                 if '-->' in lexema:
                     columna -= 1
@@ -134,6 +136,7 @@ class HTML:
                     lexema = ''
                     linea += len(lexema.split('\n'))-1
                     estado = 0
+                    i -= 1
                 elif c == "#" and i == len(cadena)-1:
                     self.tokens.append(
                         (lexema, 'DESCONOCIDO', linea, columna, 'black'))

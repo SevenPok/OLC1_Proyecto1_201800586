@@ -1,3 +1,6 @@
+import os
+
+
 class Reporte:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -42,6 +45,7 @@ class Reporte:
         mensaje = bytes(contenido, 'utf-8')
         f.write(mensaje)
         f.close()
+        os.startfile(titulo)
 
     def reporte_analisis_sintactico(self, titulo):
         contador = 1
@@ -80,3 +84,4 @@ class Reporte:
         mensaje = bytes(contenido, 'utf-8')
         f.write(mensaje)
         f.close()
+        os.startfile(titulo)
